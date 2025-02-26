@@ -20,20 +20,20 @@ def convert_mov_to_mp4(input_path, output_path):
     Converts .mov file to .mp4 using MoviePy.
     """
     try:
-        print(f"🎥 Converting {input_path} to {output_path}...")
+        print(f"Converting {input_path} to {output_path}...")
         clip = mp.VideoFileClip(input_path)
         clip.write_videofile(output_path, codec="libx264", fps=24)
-        print(f"✅ Conversion complete: {output_path}")
+        print(f"Conversion complete: {output_path}")
         return True
     except Exception as e:
-        print(f"❌ Error converting {input_path}: {e}")
+        print(f"Error converting {input_path}: {e}")
         return False
 
 def analyze_video(video_path):
     """
     Sends the .mp4 video file along with a text prompt to Google Gemini API for action classification.
     """
-    print(f"🔍 Analyzing {video_path} with Gemini API...")
+    print(f"Analyzing {video_path} with Gemini API...")
 
     model = genai.GenerativeModel("gemini-1.5-flash")
 
@@ -46,26 +46,26 @@ def analyze_video(video_path):
             {"mime_type": "video/mp4", "data": video_data}  # Correct video format
         ])
 
-        print("🔹 API Response:", response.text)
+        print("API Response:", response.text)
 
         if not response.text or response.text.strip() == "":
-            print("⚠️ API did not return any text response. Skipping file save.")
+            print("⚠API did not return any text response. Skipping file save.")
             return
 
         result_file = os.path.join(RESULTS_FOLDER, os.path.basename(video_path) + ".txt")
         with open(result_file, "w") as f:
             f.write(response.text)
 
-        print(f"✅ Yayyy analysis complete. Results saved to {result_file}")
+        print(f"Yayyy analysis complete. Results saved to {result_file}")
 
     except Exception as e:
-        print(f"❌ Error analyzing {video_path}: {e}")
+        print(f"Error analyzing {video_path}: {e}")
 
 if __name__ == "__main__":
     mov_files = glob.glob(os.path.join(INPUT_FOLDER, "*.mov"))
 
     if not mov_files:
-        print("⚠️ No .mov files found in 'input_videos' folder.")
+        print("⚠No .mov files found in 'input_videos' folder.")
     else:
         for mov_file in mov_files:
             mp4_file = os.path.join(OUTPUT_FOLDER, os.path.basename(mov_file).replace(".mov", ".mp4"))
